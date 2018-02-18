@@ -16,8 +16,8 @@ public class Gun : ScriptableObject {
     public Sprite gunSprite;
     public string gunName;
     public bool isAutomatic;
-    public int  clipSize, fireRate, zoomRate;
-    public float reloadTime, maxSpreadInDegrees, spreadPerShot, spreadCooldown;
+    public int  clipSize,  zoomRate;
+    public float fireRate, reloadTime, maxSpreadInDegrees, spreadPerShot, spreadCooldown;
     public float bulletLife, bulletSpeed, bulletMaxDamage;
 
     public Vector3 bulletSpawnOffset;

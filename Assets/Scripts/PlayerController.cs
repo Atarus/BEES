@@ -11,6 +11,7 @@ public class PlayerController : NetworkBehaviour
     public int maxHealth = 100, currentHealth;
     Rigidbody2D body;
     Camera cam;
+    CameraController camController;
 
     Animator animator;
     
@@ -28,6 +29,8 @@ public class PlayerController : NetworkBehaviour
             this.enabled = false;
         }
         cam = Camera.main;
+        camController = cam.GetComponent<CameraController>();
+        camController.target = this.transform;
         currentHealth = maxHealth;
         healthBar = GameObject.FindGameObjectWithTag("Healthbar").GetComponent<Image>();
         healthbarOriginalWidth = healthBar.rectTransform.sizeDelta.x;

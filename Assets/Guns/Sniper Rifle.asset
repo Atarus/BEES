@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3567286aeffd294a929eb9d01b19288, type: 3}
+  m_Name: Sniper Rifle
+  m_EditorClassIdentifier: 
+  ammo: 0
+  gunSprite: {fileID: 0}
+  gunName: Kar98k
+  isAutomatic: 0
+  clipSize: 5
+  zoomRate: 10
+  fireRate: 0.4
+  reloadTime: 10
+  maxSpreadInDegrees: 3
+  spreadPerShot: 3
+  spreadCooldown: 2
+  bulletLife: 30
+  bulletSpeed: 50
+  bulletMaxDamage: 50
+  bulletSpawnOffset: {x: 0, y: 0, z: 0}
+  bulletDropoff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0.8995209
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0

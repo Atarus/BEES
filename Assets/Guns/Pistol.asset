@@ -15,14 +15,13 @@ MonoBehaviour:
   gunSprite: {fileID: 0}
   gunName: P92
   isAutomatic: 0
-  damage: 10
   clipSize: 7
-  fireRate: 120
   zoomRate: 1
+  fireRate: 7
   reloadTime: 3
-  maxSpreadInDegrees: 0.5
-  spreadPerShot: 0.1
-  spreadCooldown: 0.1
+  maxSpreadInDegrees: 80
+  spreadPerShot: 20
+  spreadCooldown: 2
   bulletLife: 0.5
   bulletSpeed: 10
   bulletMaxDamage: 10

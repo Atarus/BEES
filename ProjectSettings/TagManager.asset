@@ -7,6 +7,7 @@ TagManager:
   - Hello
   - EnemyPlayer
   - Healthbar
+  - AmmoText
   layers:
   - Default
   - TransparentFX

@@ -286,9 +286,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e711150da34e4546aa743d82650c2aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun: {fileID: 11400000, guid: 08ebe33ecf9f9ff42a415078759eaef6, type: 2}
+  gun: {fileID: 11400000, guid: e455891c3903a4e4c9502110d62c82c9, type: 2}
   bullet: {fileID: 1607823116194858, guid: a2592f74aac4b4942aaa472386a70c3e, type: 2}
   bulletSpawn: {fileID: 4025221788574040}
+  ammoText: {fileID: 0}
 --- !u!212 &212233016174209294
 SpriteRenderer:
   m_ObjectHideFlags: 1
