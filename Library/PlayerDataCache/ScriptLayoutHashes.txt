@@ -2,7 +2,7 @@ WindowsStandalone
 SceneListBegin?
 Assets/BEES.unity
 SceneListEnd?
-f9f217d81f05746c4b21817dd74af35f Assembly-CSharp.dll:.GunController
+58fd56bd71512ab373237500e935d85a Assembly-CSharp.dll:.GunController
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 970a95104359198fe1a98ef48655de8c UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
 8144169769d51429c4aedc8b0f92d47b UnityEngine.Timeline.dll:UnityEngine.Timeline.AnimationPlayableAsset
@@ -114,7 +114,8 @@ bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.Audi
 463516d5b5fe8e67a0a24c48f2095b04 UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInputModule
 c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingCollider
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
-6eea5dfddb36c3988568382b8df7dbf1 Assembly-CSharp.dll:.Gun
+e828669a8352b2e329d5606e5e9081ba Assembly-CSharp.dll:.Gun
+0ea7e3a1b65cd933d7a007e6774c4eaa Assembly-CSharp.dll:.CameraController
 205965134a5874db410d674ebdf33ba7 Assembly-CSharp.dll:.ExampleWheelController
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Advertisements.dll:UnityEngine.Advertisements.CallbackExecutor
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Advertisements.dll:UnityEngine.Advertisements.Editor.Placeholder
@@ -145,4 +146,4 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 f671a42aea5f34fec6a4450a3668c615 Assembly-CSharp.dll:UnityEngine.PostProcessing.PostProcessingProfile
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 8514e7ae666814eccad84e75237f8524 Assembly-CSharp.dll:.BulletController
-1af82899debff4c01d10717e8b85f13c Assembly-CSharp.dll:.PlayerController
+f8d5c8cea4b05975a4742a81f11c190f Assembly-CSharp.dll:.PlayerController

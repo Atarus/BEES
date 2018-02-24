@@ -13,12 +13,33 @@ public class PlayerController : NetworkBehaviour
     Camera cam;
     CameraController camController;
 
-    Animator animator;
     
-
     [SerializeField]
     public Image healthBar;
     float healthbarOriginalWidth;
+
+    [HideInInspector]
+    public Inventory inv = new Inventory();
+    public Text pistolAmmo, smgAmmo, arAmmo, dmrAmmo, sniperAmmo;
+
+    public bool isCurrentlyHealing = false;
+    public float timeLeftToHeal;
+
+    public float royalJellyTime = 5;
+    public float stimPackTime = 6;
+    public float bandageTime = 3;
+
+    public int royalJellyHealAmount = 10000;
+    public int stimPackHealAmount = 50;
+    public int bandageHealAmount = 10;
+
+    public enum healthType { royalJelly, stimPack, bandage};
+    healthType healUsing;
+
+    GameObject usingMedsBar;
+    Image medTimeImage;
+    Text medTimeText, usingMedText;
+    
 
 
     void Start()
@@ -34,9 +55,20 @@ public class PlayerController : NetworkBehaviour
         currentHealth = maxHealth;
         healthBar = GameObject.FindGameObjectWithTag("Healthbar").GetComponent<Image>();
         healthbarOriginalWidth = healthBar.rectTransform.sizeDelta.x;
+
+
+        usingMedsBar = GameObject.FindGameObjectWithTag("UsingMeds");
+        medTimeImage = GameObject.FindGameObjectWithTag("MedTimeImage").GetComponent<Image>();
+        medTimeText = GameObject.FindGameObjectWithTag("MedTimeText").GetComponent<Text>();
+        usingMedText = GameObject.FindGameObjectWithTag("UsingMedText").GetComponent<Text>();
+        GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>().controller = this;
+
+
+        usingMedsBar.SetActive(false);
         this.transform.tag = "Player";
         body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        SetupInventory();
+        
     }
 
     public override void OnStartLocalPlayer()
@@ -49,11 +81,7 @@ public class PlayerController : NetworkBehaviour
         CheckIfDead();
         LookToMouse();
         HandleMovement();
-        if (Input.GetMouseButtonDown(0))
-        {
-            animator.SetTrigger("Shoot");
-        }
-        HandleAnimations();
+        HandleHealing();
         HandleUI();
     }
 
@@ -70,10 +98,12 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             moveSpeedX = Mathf.Lerp(moveSpeedX, movementModifier, acceleration * Time.deltaTime);
+            isCurrentlyHealing = false;
         }
         else if (Input.GetKey(KeyCode.S))
         {
             moveSpeedX = Mathf.Lerp(moveSpeedX, -movementModifier, acceleration * Time.deltaTime);
+            isCurrentlyHealing = false;
         }
         else
         {
@@ -82,10 +112,12 @@ public class PlayerController : NetworkBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             moveSpeedY = Mathf.Lerp(moveSpeedY, -movementModifier, acceleration * Time.deltaTime);
+            isCurrentlyHealing = false;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             moveSpeedY = Mathf.Lerp(moveSpeedY, movementModifier, acceleration * Time.deltaTime);
+            isCurrentlyHealing = false;
         }
         else
         {
@@ -96,22 +128,36 @@ public class PlayerController : NetworkBehaviour
 
     void HandleUI()
     {
-        healthBar.rectTransform.sizeDelta = new Vector2(((float)currentHealth/(float)maxHealth) * healthbarOriginalWidth, healthBar.rectTransform.sizeDelta.y);
-        
+        healthBar.rectTransform.sizeDelta = new Vector2(((float)currentHealth / (float)maxHealth) * healthbarOriginalWidth, healthBar.rectTransform.sizeDelta.y);
+        pistolAmmo.text = inv.pistolAmmo.ToString();
+        if (inv.pistolAmmo == inv.maxPistolAmmo) { pistolAmmo.color = Color.red; } else { pistolAmmo.color = Color.white; }
+        smgAmmo.text = inv.smgAmmo.ToString();
+        if (inv.smgAmmo == inv.maxsmgAmmo) { smgAmmo.color = Color.red; } else { smgAmmo.color = Color.white; } 
+        arAmmo.text = inv.assaultRifleAmmo.ToString();
+        if (inv.assaultRifleAmmo == inv.maxAssaultRifleAmmo) { arAmmo.color = Color.red; } else { arAmmo.color = Color.white; }
+        dmrAmmo.text = inv.dmrAmmo.ToString();
+        if (inv.dmrAmmo == inv.maxDmrAmmo) { dmrAmmo.color = Color.red; } else { dmrAmmo.color = Color.white; }
+        sniperAmmo.text = inv.sniperAmmo.ToString();
+        if (inv.sniperAmmo == inv.maxSniperAmmo) { sniperAmmo.color = Color.red; } else { sniperAmmo.color = Color.white; }
+        HandleHealthUI();
     }
 
-    void HandleAnimations()
+    void HandleHealthUI()
     {
-        if (body.velocity != new Vector2(0, 0) && !animator.GetBool("isMoving"))
+        if (isCurrentlyHealing)
         {
-            animator.SetBool("isMoving", true);
+            if (!usingMedsBar.activeInHierarchy) { usingMedsBar.SetActive(true); }
+            switch (healUsing)
+            {
+                case healthType.royalJelly: { medTimeImage.fillAmount = timeLeftToHeal / royalJellyTime; usingMedText.text = "Using Royal Jelly"; break; }
+                case healthType.stimPack: { medTimeImage.fillAmount = timeLeftToHeal / stimPackTime; usingMedText.text = "Using Stim Pack"; break; }
+                case healthType.bandage: { medTimeImage.fillAmount = timeLeftToHeal / bandageTime; usingMedText.text = "Using Bandage"; break; }
+            }
+            medTimeText.text = timeLeftToHeal.ToString("F1");
         }
-        else if (animator.GetBool("isMoving"))
-        {
-            animator.SetBool("isMoving", false);
-        }
+        if (!isCurrentlyHealing) { if (usingMedsBar.activeInHierarchy) { usingMedsBar.SetActive(false); } }
     }
-
+    
     void CheckIfDead()
     {
         if (currentHealth <= 0)
@@ -134,5 +180,108 @@ public class PlayerController : NetworkBehaviour
         body.rotation = angle;
     }
 
+    #region Character Setup
+
+    void SetupInventory()
+    {
+        pistolAmmo = GameObject.Find("PistolAmmoText").GetComponent<Text>();
+        smgAmmo = GameObject.Find("SMGAmmoText").GetComponent<Text>();
+        arAmmo = GameObject.Find("ARAmmoText").GetComponent<Text>();
+        dmrAmmo = GameObject.Find("DMRAmmoText").GetComponent<Text>();
+        sniperAmmo = GameObject.Find("SniperAmmoText").GetComponent<Text>();
+
+
+        inv.pistolAmmo = 40;
+        inv.smgAmmo = 90;
+        inv.assaultRifleAmmo = 80;
+        inv.dmrAmmo = 30;
+        inv.sniperAmmo = 15;
+
+        inv.maxPistolAmmo = 40;
+        inv.maxsmgAmmo = 90;
+        inv.maxAssaultRifleAmmo = 80;
+        inv.maxDmrAmmo = 30;
+        inv.maxSniperAmmo = 15;
+    }
+    #endregion
+
+    #region Handle Healing
+
+    public void UseHealItem(healthType healer)
+    {
+        if (!isCurrentlyHealing)
+        {
+            switch (healer)
+            {
+                case healthType.royalJelly:
+                    {
+                        if (inv.royalJellies > 0)
+                        {
+                            timeLeftToHeal = royalJellyTime;
+                            isCurrentlyHealing = true;
+                        }
+                        break;
+                    }
+                case healthType.stimPack:
+                    {
+                        if (inv.stimPacks > 0)
+                        {
+                            timeLeftToHeal = stimPackTime;
+                            isCurrentlyHealing = true;
+                        }
+                        break;
+                    }
+                case healthType.bandage:
+                    {
+                        if (inv.bandages > 0)
+                        {
+                            timeLeftToHeal = bandageTime;
+                            isCurrentlyHealing = true;
+                        }
+                        break;
+                    }
+                default: break;
+            }
+        }
+        
+    }
+
+    void Heal(healthType healer)
+    {
+        switch (healer)
+        {
+            case healthType.royalJelly: currentHealth += royalJellyHealAmount; inv.royalJellies -= 1; break;
+            case healthType.stimPack: currentHealth += stimPackHealAmount; inv.stimPacks -= 1; break;
+            case healthType.bandage: currentHealth += bandageHealAmount; inv.bandages -= 1;  break;
+            default:break;
+
+        }
+        isCurrentlyHealing = false;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+    }
     
+    void HandleHealing()
+    {
+        if (isCurrentlyHealing) { timeLeftToHeal -= Time.deltaTime; }
+
+        if (Input.GetKey(KeyCode.Alpha8)) { healUsing = healthType.bandage; UseHealItem(healUsing); }
+        if (Input.GetKey(KeyCode.Alpha9)) { healUsing = healthType.stimPack; UseHealItem(healUsing); }
+        if (Input.GetKey(KeyCode.Alpha0)) { healUsing = healthType.royalJelly; UseHealItem(healUsing);}
+
+        if (isCurrentlyHealing && timeLeftToHeal <= 0)
+        {
+            Heal(healUsing);
+            isCurrentlyHealing = false;
+        }
+    }
+
+    #endregion
+
+
+
+
+
 }

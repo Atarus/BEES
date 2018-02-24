@@ -8,7 +8,7 @@ public class Gun : ScriptableObject {
 
     public enum AmmoType
     {
-        pistolAmmo, shotgunAmmo, smgAmmo, assaultAmmo, dmrAmmo, sniperAmmo
+        pistolAmmo, smgAmmo, assaultAmmo, dmrAmmo, sniperAmmo
     }
 
     public AmmoType ammo;

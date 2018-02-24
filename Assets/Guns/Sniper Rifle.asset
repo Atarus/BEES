@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3567286aeffd294a929eb9d01b19288, type: 3}
   m_Name: Sniper Rifle
   m_EditorClassIdentifier: 
-  ammo: 0
+  ammo: 4
   gunSprite: {fileID: 0}
   gunName: Kar98k
   isAutomatic: 0

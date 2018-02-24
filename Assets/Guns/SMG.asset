@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3567286aeffd294a929eb9d01b19288, type: 3}
   m_Name: SMG
   m_EditorClassIdentifier: 
-  ammo: 2
+  ammo: 1
   gunSprite: {fileID: 0}
   gunName: UMP-9
   isAutomatic: 1

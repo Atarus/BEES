@@ -35,13 +35,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4718501166828954}
   - component: {fileID: 212233016174209294}
-  - component: {fileID: 114071168777484676}
   - component: {fileID: 50984052043478186}
   - component: {fileID: 114866437348594960}
   - component: {fileID: 114707711725741934}
-  - component: {fileID: 95115761364190564}
-  - component: {fileID: 114711887246041668}
   - component: {fileID: 60094956803810044}
+  - component: {fileID: 114071168777484676}
   - component: {fileID: 114966034386229416}
   m_Layer: 0
   m_Name: Player
@@ -172,23 +170,6 @@ PolygonCollider2D:
       - {x: 0.155, y: -0.47}
       - {x: 0.035, y: -0.48}
       - {x: 0.044999998, y: -0.48999998}
---- !u!95 &95115761364190564
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1842284867360620}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c13af0174c3542a4aa13a7596a545952, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 2
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114071168777484676
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -203,6 +184,11 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   healthBar: {fileID: 0}
+  pistolAmmo: {fileID: 0}
+  smgAmmo: {fileID: 0}
+  arAmmo: {fileID: 0}
+  dmrAmmo: {fileID: 0}
+  sniperAmmo: {fileID: 0}
 --- !u!114 &114707711725741934
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -224,25 +210,6 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 10
   m_InterpolateMovement: 1
---- !u!114 &114711887246041668
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1842284867360620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1590678366, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Animator: {fileID: 95115761364190564}
-  m_ParameterSendBits: 0
-  param0: 
-  param1: 
-  param2: 
-  param3: 
-  param4: 
-  param5: 
 --- !u!114 &114866437348594960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -286,10 +253,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e711150da34e4546aa743d82650c2aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun: {fileID: 11400000, guid: e455891c3903a4e4c9502110d62c82c9, type: 2}
+  gun: {fileID: 0}
   bullet: {fileID: 1607823116194858, guid: a2592f74aac4b4942aaa472386a70c3e, type: 2}
   bulletSpawn: {fileID: 4025221788574040}
   ammoText: {fileID: 0}
+  g1: {fileID: 11400000, guid: 08ebe33ecf9f9ff42a415078759eaef6, type: 2}
+  g2: {fileID: 11400000, guid: 758dbdbaf4ce9004c927870aadf02736, type: 2}
 --- !u!212 &212233016174209294
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -8,6 +8,11 @@ TagManager:
   - EnemyPlayer
   - Healthbar
   - AmmoText
+  - Canvas
+  - UsingMeds
+  - MedTimeImage
+  - MedTimeText
+  - UsingMedText
   layers:
   - Default
   - TransparentFX

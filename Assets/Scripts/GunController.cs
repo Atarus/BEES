@@ -7,17 +7,21 @@ using UnityEngine.UI;
 public class GunController : NetworkBehaviour {
 
     #region Public Variables
-    public Gun gun;
     public GameObject bullet;
     public Transform bulletSpawn;
 
     public Text ammoText;
 
+    Inventory inv;
+    GunHolder currentGun;
+
+    //TEST GUNS//
+
+    public Gun g1, g2;
     #endregion
 
     #region Private Variables
     float timeToNextShot;
-    int currentAmmo;
 
     bool isReloading = false;
     float currentReloadTime;
@@ -30,42 +34,67 @@ public class GunController : NetworkBehaviour {
     #region MonoBehaviour Functions
     // Use this for initialization
     void Start () {
-        currentReloadTime = gun.reloadTime;
+       
         ammoText = GameObject.FindGameObjectWithTag("AmmoText").GetComponent<Text>();
+        inv = GetComponent<PlayerController>().inv;
+
+
+        //TESTING REMOVE PLS//
+
+        inv.gunOne = new GunHolder(true,g1,0);
+        inv.gunTwo = new GunHolder(true,g2,0);
+        currentReloadTime = inv.gunOne.gun.reloadTime;
+
+        currentGun = inv.gunOne;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(gun.isAutomatic);
         if (timeToNextShot > 0) { timeToNextShot -= Time.deltaTime;}
-        if (gun.isAutomatic)
+        if (currentGun.hasGun)
         {
-            if (Input.GetMouseButton(0))
+            if (currentGun.gun.isAutomatic)
             {
-                
-                if (CheckIfCanFire())
+                if (Input.GetMouseButton(0))
                 {
-                    isReloading = false;
-                    CmdFire();
+
+                    if (CheckIfCanFire())
+                    {
+                        isReloading = false;
+                        CmdFire();
+                    }
                 }
             }
-        }
-        else if (!gun.isAutomatic)
-        {
-            if (Input.GetMouseButtonDown(0))
+            else if (!currentGun.gun.isAutomatic)
             {
-                if (CheckIfCanFire())
+                if (Input.GetMouseButtonDown(0))
                 {
-                    isReloading = false;
-                    CmdFire();
+                    if (CheckIfCanFire())
+                    {
+                        isReloading = false;
+                        CmdFire();
+                    }
                 }
+            }
+
+            if (Input.GetKey(KeyCode.R) && currentGun.currentAmmo < currentGun.gun.clipSize && inv.CheckAmmoAmmount(currentGun.gun.ammo) > 0)
+            {
+                isReloading = true;
             }
         }
 
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKey(KeyCode.Alpha1))
         {
-            isReloading = true;
+            isReloading = false;
+            SwitchGun(1);
         }
+        if (Input.GetKey(KeyCode.Alpha2))
+        {
+            isReloading = false;
+            SwitchGun(2);
+        }
+
+
         HandleReloading();
         HandleShotSpread();
         HandleUI();
@@ -76,7 +105,7 @@ public class GunController : NetworkBehaviour {
 
     void HandleUI()
     {
-        ammoText.text = currentAmmo + "/" + gun.clipSize;
+        ammoText.text = currentGun.currentAmmo + "/" + currentGun.gun.clipSize;
     }
 
     #endregion
@@ -88,26 +117,26 @@ public class GunController : NetworkBehaviour {
     void CmdFire()
     {
 
-        GameObject b = Instantiate(bullet, bulletSpawn.position + gun.bulletSpawnOffset, bulletSpawn.rotation);
+        GameObject b = Instantiate(bullet, bulletSpawn.position + currentGun.gun.bulletSpawnOffset, bulletSpawn.rotation);
         BulletController bScript = b.GetComponent<BulletController>();
-        bScript.maxDamage = gun.bulletMaxDamage;
-        bScript.bulletDropoff = gun.bulletDropoff;
+        bScript.maxDamage = currentGun.gun.bulletMaxDamage;
+        bScript.bulletDropoff = currentGun.gun.bulletDropoff;
         bScript.originatingPlayer = this.transform.gameObject;
-        bScript.life = gun.bulletLife;
+        bScript.life = currentGun.gun.bulletLife;
         GetShotSpread(b);
-        b.GetComponent<Rigidbody2D>().velocity = b.transform.right * gun.bulletSpeed;
+        b.GetComponent<Rigidbody2D>().velocity = b.transform.right * currentGun.gun.bulletSpeed;
         NetworkServer.Spawn(b);
-        Destroy(b, gun.bulletLife);
-        currentAmmo -= 1;
-        timeToNextShot = 1/ gun.fireRate;
-        currentSpreadCooldown = gun.spreadCooldown;
-        currentSpreadInDegrees = gun.spreadPerShot;
+        Destroy(b, currentGun.gun.bulletLife);
+        currentGun.currentAmmo -= 1;
+        timeToNextShot = 1/ currentGun.gun.fireRate;
+        currentSpreadCooldown = currentGun.gun.spreadCooldown;
+        currentSpreadInDegrees = currentGun.gun.spreadPerShot;
     }
     
     bool CheckIfCanFire()
     {
 
-        if (timeToNextShot <= 0 && currentAmmo > 0)
+        if (timeToNextShot <= 0 && currentGun.currentAmmo > 0)
         {
             
             return true;
@@ -121,24 +150,35 @@ public class GunController : NetworkBehaviour {
 
         if (!isReloading)
         {
-            currentReloadTime = gun.reloadTime;
+            currentReloadTime = currentGun.gun.reloadTime;
         }
-        if (isReloading)
+        else
         {
             currentReloadTime -= Time.deltaTime;
         }
         if (currentReloadTime <= 0)
         {
-            currentAmmo = gun.clipSize;
+            int ammoLeft = inv.CheckAmmoAmmount(currentGun.gun.ammo);
+            if (ammoLeft >= (currentGun.gun.clipSize - currentGun.currentAmmo))
+            {
+
+                inv.ChangeAmmo(currentGun.gun.ammo, -(currentGun.gun.clipSize - currentGun.currentAmmo));
+                currentGun.currentAmmo = currentGun.gun.clipSize;
+            }
+            else 
+            {
+                currentGun.currentAmmo += ammoLeft;
+                inv.ChangeAmmo(currentGun.gun.ammo, -ammoLeft);
+            }
             isReloading = false;
         }
     }
 
     void HandleShotSpread()
     {
-        if (currentSpreadInDegrees > gun.maxSpreadInDegrees)
+        if (currentSpreadInDegrees > currentGun.gun.maxSpreadInDegrees)
         {
-            currentSpreadInDegrees = gun.maxSpreadInDegrees;
+            currentSpreadInDegrees = currentGun.gun.maxSpreadInDegrees;
         }
         currentSpreadCooldown -= Time.deltaTime;
         if (currentSpreadCooldown <= 0)
@@ -161,6 +201,15 @@ public class GunController : NetworkBehaviour {
     #endregion
 
     #region Handling Changing Gun
+
+    void SwitchGun(int whichGun)
+    {
+        switch (whichGun)
+        {
+            case 1:   currentGun = inv.gunOne;  break;
+            case 2:  currentGun = inv.gunTwo;   break;
+        }
+    }
 
     #endregion
 
